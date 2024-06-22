@@ -4,4 +4,8 @@
 
 ![result](./screenshots/result.png)
 
-**thanks to [vortice](https://github.com/amerkoleci/Vortice.Windows), [castrorix/WinUI3_SwapChainPanel_Layered](https://github.com/castorix/WinUI3_SwapChainPanel_Layered) and [WinUIEx](https://github.com/dotMorten/WinUIEx)**
+**thanks to**
+>* [vortice](https://github.com/amerkoleci/Vortice.Windows)
+>* [castrorix/WinUI3_SwapChainPanel_Layered](https://github.com/castorix/WinUI3_SwapChainPanel_Layered)
+>* [WinUIEx](https://github.com/dotMorten/WinUIEx)
+>* [D3DWinUI3](https://github.com/Ianuarius/D3DWinUI3)
