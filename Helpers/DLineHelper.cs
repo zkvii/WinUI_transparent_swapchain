@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace D3DWinUI3;
+namespace FluentCountDown.Helpers;
 
 public class DLineHelper
 {
@@ -34,7 +34,7 @@ public class DLineHelper
             points[i] = new DLinePoint(sumX / count, sumY / count, sumPressure / count);
         }
     }
-    
+
 
     public static void SplineInterpolationInPlace(ObservableCollection<DLinePoint> points, int resolution = 100)
     {
