@@ -12,11 +12,17 @@
     <!-- <Window.SystemBackdrop> -->
     <!--     <winUiEx:TransparentTintBackdrop></winUiEx:TransparentTintBackdrop> -->
     <!-- </Window.SystemBackdrop> -->
-    <SwapChainPanel x:Name="SwapChainCanvas" Width="200" Height="200" Margin="0,31,0,0"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch">
-            <Button Content="Toggle Title" Click="ToggleTitle"></Button>
+    <!-- <SwapChainPanel x:Name="SwapChainCanvas"  Margin="0,31,0,0" -->
+    <!--                 HorizontalAlignment="Stretch" -->
+    <!--                 VerticalAlignment="Stretch"> -->
+    <!-- </SwapChainPanel> -->
+    <SwapChainPanel x:Name="SwapChainCanvas">
+        <StackPanel Orientation="Horizontal">
+            <Button Content="Click me" Click="ToggleTitle" Margin="0,0,20,0"></Button>
+            <Button Content="Click me to set wallpaper" Click="SetWallPaper"></Button>
+        </StackPanel>
+    
 
-        <!-- <Rectangle Height="200" Width="200" Fill="Blue" Stroke="Red"></Rectangle> -->
     </SwapChainPanel>
+
 </Window>
