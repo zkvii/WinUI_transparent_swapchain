@@ -76,33 +76,43 @@ public sealed partial class MainWindow
         // SetClickThrough();
     }
 
+    private bool isDesktop = false;
     private void SetWorkerWParent()
     {
-        var hShellViewWin = IntPtr.Zero;
-        var hWorkerW = IntPtr.Zero;
-
-        var hProgman = Win32Helpers.FindWindow("Progman", "Program Manager");
-        var hDesktopWnd = Win32Helpers.GetDesktopWindow();
-
-
-
-        if (hProgman != IntPtr.Zero)
+        if (!isDesktop)
         {
-            // Get and load the main List view window containing the icons.
-            hShellViewWin = Win32Helpers.FindWindowEx(hProgman, IntPtr.Zero, "SHELLDLL_DefView", null);
-            if (hShellViewWin == IntPtr.Zero)
-            {
-                // When this fails (picture rotation is turned ON), then look for the WorkerW windows list to get the
-                // correct desktop list handle.
-                // As there can be multiple WorkerW windows, iterate through all to get the correct one
-                do
-                {
-                    hWorkerW = Win32Helpers.FindWindowEx(hDesktopWnd, hWorkerW, "WorkerW", null);
-                    hShellViewWin = Win32Helpers.FindWindowEx(hWorkerW, IntPtr.Zero, "SHELLDLL_DefView", null);
-                } while (hShellViewWin == IntPtr.Zero && hWorkerW != IntPtr.Zero);
-            }
+            var hShellViewWin = IntPtr.Zero;
+            var hWorkerW = IntPtr.Zero;
 
-            Win32Helpers.SetParent(mHwnd, hShellViewWin);
+            var hProgman = Win32Helpers.FindWindow("Progman", "Program Manager");
+            var hDesktopWnd = Win32Helpers.GetDesktopWindow();
+
+
+
+            if (hProgman != IntPtr.Zero)
+            {
+                // Get and load the main List view window containing the icons.
+                hShellViewWin = Win32Helpers.FindWindowEx(hProgman, IntPtr.Zero, "SHELLDLL_DefView", null);
+                if (hShellViewWin == IntPtr.Zero)
+                {
+                    // When this fails (picture rotation is turned ON), then look for the WorkerW windows list to get the
+                    // correct desktop list handle.
+                    // As there can be multiple WorkerW windows, iterate through all to get the correct one
+                    do
+                    {
+                        hWorkerW = Win32Helpers.FindWindowEx(hDesktopWnd, hWorkerW, "WorkerW", null);
+                        hShellViewWin = Win32Helpers.FindWindowEx(hWorkerW, IntPtr.Zero, "SHELLDLL_DefView", null);
+                    } while (hShellViewWin == IntPtr.Zero && hWorkerW != IntPtr.Zero);
+                }
+
+                Win32Helpers.SetParent(mHwnd, hShellViewWin);
+                isDesktop= true;
+            }
+        }
+        else
+        {
+            Win32Helpers.SetParent(mHwnd, IntPtr.Zero);
+            isDesktop = false;
         }
 
         // var progman = Win32Helpers.FindWindow("Progman", null);
