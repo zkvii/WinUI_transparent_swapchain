@@ -139,8 +139,6 @@ static class Win32Helpers
     public const int WS_EX_LAYERED = 0x00080000;
     public const int WS_EX_TRANSPARENT = 0x00000020;
 
-    public const uint LWA_COLORKEY = 0x00000001;
-    public const uint LWA_ALPHA = 0x00000002;
     public static long GetWindowLong(nint hWnd, int nIndex)
     {
         if (nint.Size == 4)
@@ -181,4 +179,127 @@ static class Win32Helpers
 
         return result;
     }
+
+
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    public static extern uint RegisterWindowMessage(string lpString);
+
+    [DllImport("shell32.dll", CharSet = CharSet.Auto)]
+    public static extern bool Shell_NotifyIcon(uint dwMessage, [In] ref NOTIFYICONDATA lpData);
+
+    public const uint NIM_ADD = 0x00000000;
+    public const uint NIM_MODIFY = 0x00000001;
+    public const uint NIM_DELETE = 0x00000002;
+    public const uint NIF_MESSAGE = 0x00000001;
+    public const uint NIF_ICON = 0x00000002;
+    public const uint NIF_TIP = 0x00000004;
+
+    public const int WM_USER = 0x0400;
+    public const int WM_TRAYICON = WM_USER + 1;
+
+    public const uint IMAGE_ICON = 1;
+    public const uint LR_LOADFROMFILE = 0x00000010;
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    public struct NOTIFYICONDATA
+    {
+        public uint cbSize;
+        public IntPtr hWnd;
+        public uint uID;
+        public uint uFlags;
+        public uint uCallbackMessage;
+        public IntPtr hIcon;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+        public string szTip;
+        public uint dwState;
+        public uint dwStateMask;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+        public string szInfo;
+        public uint uTimeoutOrVersion;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+        public string szInfoTitle;
+        public uint dwInfoFlags;
+        public Guid guidItem;
+        public IntPtr hBalloonIcon;
+    }
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    public static extern IntPtr LoadImage(IntPtr hInst, string lpszName, uint uType, int cxDesired, int cyDesired, uint fuLoad);
+
+
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+    public const uint LWA_COLORKEY = 0x00000001;
+    public const uint LWA_ALPHA = 0x00000002;
+    public const uint SWP_FRAMECHANGED = 0x0020;
+    public const uint SWP_NOMOVE = 0x0002;
+    public const uint SWP_NOSIZE = 0x0001;
+    public const uint SWP_NOZORDER = 0x0004;
+    public const uint SWP_SHOWWINDOW = 0x0040;
+
+
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+    public const int SW_SHOW = 5;
+
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool UpdateLayeredWindow(IntPtr hwnd, IntPtr hdcDst, ref POINT pptDst, ref SIZE psize, IntPtr hdcSrc, ref POINT pptSrc, int crKey, ref BLENDFUNCTION pblend, int dwFlags);
+
+    [DllImport("gdi32.dll", SetLastError = true)]
+    private static extern IntPtr CreateCompatibleDC(IntPtr hdc);
+
+    [DllImport("gdi32.dll", SetLastError = true)]
+    private static extern bool DeleteDC(IntPtr hdc);
+
+    [DllImport("gdi32.dll", SetLastError = true)]
+    private static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern IntPtr GetDC(IntPtr hWnd);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct POINT
+    {
+        public int X;
+        public int Y;
+        public POINT(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SIZE
+    {
+        public int cx;
+        public int cy;
+        public SIZE(int x, int y)
+        {
+            cx = x;
+            cy = y;
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    struct BLENDFUNCTION
+    {
+        public byte BlendOp;
+        public byte BlendFlags;
+        public byte SourceConstantAlpha;
+        public byte AlphaFormat;
+    }
+
+    const int ULW_ALPHA = 0x00000002;
+    const byte AC_SRC_OVER = 0x00;
+    const byte AC_SRC_ALPHA = 0x01;
+
+    [DllImport("gdi32.dll")]
+    static extern bool DeleteObject(IntPtr hObject);
 }

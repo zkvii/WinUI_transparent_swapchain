@@ -17,9 +17,11 @@
     <!--                 VerticalAlignment="Stretch"> -->
     <!-- </SwapChainPanel> -->
     <SwapChainPanel x:Name="SwapChainCanvas">
-        <StackPanel Orientation="Horizontal">
-            <Button Content="Click me" Click="ToggleTitle" Margin="0,0,20,0"></Button>
-            <Button Content="Click me to set wallpaper" Click="SetWallPaper"></Button>
+        <StackPanel Orientation="Vertical" Margin="0,31,0,0">
+            <Button Content="SetTransparent" Click="ToggleTransparent" Margin="0,0,20,0"></Button>
+
+            <Button Content="SetTitlebar" Click="ToggleTitle" Margin="0,0,20,0"></Button>
+            <Button Content="SetWallpaper" Click="SetWallPaper"></Button>
         </StackPanel>
     
 
