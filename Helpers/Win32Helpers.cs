@@ -11,6 +11,9 @@ namespace FluentCountDown.Helpers;
 static class Win32Helpers
 {
 
+
+
+
     [DllImport("user32.dll", SetLastError = true)]
     public static extern IntPtr SetParent(IntPtr child, IntPtr parent);
 
@@ -244,23 +247,23 @@ static class Win32Helpers
     public const int SW_SHOW = 5;
 
 
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool UpdateLayeredWindow(IntPtr hwnd, IntPtr hdcDst, ref POINT pptDst, ref SIZE psize, IntPtr hdcSrc, ref POINT pptSrc, int crKey, ref BLENDFUNCTION pblend, int dwFlags);
+    [DllImport("User32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+    public static extern bool UpdateLayeredWindow(IntPtr hwnd, IntPtr hdcDst, IntPtr pptDst, IntPtr psize, IntPtr hdcSrc, IntPtr pprSrc, int crKey, ref BLENDFUNCTION pblend, int dwFlags);
 
     [DllImport("gdi32.dll", SetLastError = true)]
-    private static extern IntPtr CreateCompatibleDC(IntPtr hdc);
+    public static extern IntPtr CreateCompatibleDC(IntPtr hdc);
 
     [DllImport("gdi32.dll", SetLastError = true)]
-    private static extern bool DeleteDC(IntPtr hdc);
+    public static extern bool DeleteDC(IntPtr hdc);
 
     [DllImport("gdi32.dll", SetLastError = true)]
-    private static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);
+    public static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);
 
     [DllImport("user32.dll", SetLastError = true)]
-    private static extern IntPtr GetDC(IntPtr hWnd);
+    public static extern IntPtr GetDC(IntPtr hWnd);
 
     [DllImport("user32.dll", SetLastError = true)]
-    private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+    public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
 
     [StructLayout(LayoutKind.Sequential)]
@@ -288,7 +291,7 @@ static class Win32Helpers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct BLENDFUNCTION
+    public struct BLENDFUNCTION
     {
         public byte BlendOp;
         public byte BlendFlags;
@@ -296,10 +299,48 @@ static class Win32Helpers
         public byte AlphaFormat;
     }
 
-    const int ULW_ALPHA = 0x00000002;
-    const byte AC_SRC_OVER = 0x00;
-    const byte AC_SRC_ALPHA = 0x01;
+    public const int ULW_ALPHA = 0x00000002;
+    public const byte AC_SRC_OVER = 0x00;
+    public const byte AC_SRC_ALPHA = 0x01;
 
     [DllImport("gdi32.dll")]
     static extern bool DeleteObject(IntPtr hObject);
+
+
+    [StructLayoutAttribute(LayoutKind.Sequential)]
+    public struct BITMAP
+    {
+        public int bmType;
+        public int bmWidth;
+        public int bmHeight;
+        public int bmWidthBytes;
+        public short bmPlanes;
+        public short bmBitsPixel;
+        public IntPtr bmBits;
+    }
+    [DllImport("Gdi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+    public static extern int GetObject(IntPtr hFont, int nSize, out BITMAP bm);
+
+
+    public const int ULW_COLORKEY = 0x00000001;
+    public const int ULW_OPAQUE = 0x00000004;
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct RECT
+    {
+        public int left;
+        public int top;
+        public int right;
+        public int bottom;
+        public RECT(int Left, int Top, int Right, int Bottom)
+        {
+            left = Left;
+            top = Top;
+            right = Right;
+            bottom = Bottom;
+        }
+    }
+
+    [DllImport("User32.dll", SetLastError = true)]
+    public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 }

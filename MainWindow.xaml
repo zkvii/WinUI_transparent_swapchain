@@ -17,14 +17,14 @@
     <!--                 VerticalAlignment="Stretch"> -->
     <!-- </SwapChainPanel> -->
     <SwapChainPanel x:Name="SwapChainCanvas">
-        <StackPanel Orientation="Vertical" Margin="0,31,0,0">
-            <Button Content="SetTransparent" Click="ToggleTransparent" Margin="0,0,20,0"></Button>
-
-            <Button Content="SetTitlebar" Click="ToggleTitle" Margin="0,0,20,0"></Button>
+     <Border BorderThickness="1" BorderBrush="Yellow"  >
+        <StackPanel Orientation="Vertical" Margin="0,0,0,0">
+            <Button Content="SetTransparent" Click="SetTransparent" Margin="0,0,20,0"></Button>
+            <Button Content="ExtendedTitlebar" Click="SetTitle" Margin="0,0,20,0"></Button>
             <Button Content="SetWallpaper" Click="SetWallPaper"></Button>
+            <Button Content="Restore Normal Window" Click="RestoreNormal"></Button>
         </StackPanel>
-    
-
+     </Border>
     </SwapChainPanel>
 
 </Window>

@@ -6,6 +6,8 @@ using Vortice.DXGI;
 using Vortice.Mathematics;
 using FluentCountDown.Helpers;
 using Microsoft.Win32;
+using WinUIEx;
+using Windows.Graphics;
 
 namespace FluentCountDown;
 
@@ -19,28 +21,6 @@ public sealed partial class MainWindow
     public MainWindow()
     {
         InitializeComponent();
-        // ExtendsContentIntoTitleBar= true;
-
-        //easy way to remain system title bar
-
-        // mHwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-
-        // AppWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
-        // Width = 600;
-        // Height = 400;
-        // var winId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(WindowHelpers.MHwnd);
-        // var appWindow = AppWindow.GetFromWindowId(winId);
-
-        // var hWndDesktopChildSiteBridge =
-        //     Win32Helpers.FindWindowEx(WindowHelpers.MHwnd, IntPtr.Zero, "Microsoft.UI.Content.ContentWindowSiteBridge", null);
-
-        // _presenter = appWindow.Presenter as OverlappedPresenter;
-        // _presenter.SetBorderAndTitleBar(false, false);
-        // _presenter.IsResizable = false;
-
-        // int nValue = (int)Win32Helpers.DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DEFAULT;
-        // Win32Helpers.DwmSetWindowAttribute(WindowHelpers.MHwnd, (int)Win32Helpers.DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE,
-        //     ref nValue, Marshal.SizeOf(typeof(int)));
 
         SwapChainCanvas.Loaded += SwapChainCanvas_Loaded;
 
@@ -50,39 +30,19 @@ public sealed partial class MainWindow
         timer.Tick += Timer_Tick;
         timer.Interval = TimeSpan.FromMilliseconds(16D);
         DirectXHelper.InitDirectX();
-        // long nExStyle = Win32Helpers.GetWindowLong(WindowHelpers.MHwnd, Win32Helpers.GWL_EXSTYLE);
-        //
-        //
-        // Win32Helpers.SetWindowLong(WindowHelpers.MHwnd, Win32Helpers.GWL_EXSTYLE, (IntPtr)(nExStyle | Win32Helpers.WS_EX_LAYERED));
-        // Win32Helpers.SetWindowLong(WindowHelpers.GetWindowHandle(this), Win32Helpers.GWL_EXSTYLE, (IntPtr)(nExStyle | Win32Helpers.WS_EX_LAYERED));
+        Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().TryEnqueue(
+            Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
+            () =>
+            {
+                Microsoft.UI.WindowId myWndId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(WindowHelpers.MHwnd);
+                var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(myWndId);
+                appWindow.Resize(new SizeInt32(500, 800));
 
-        // SetClickThrough();
-        // CreateTrayIcon();
+                //...
+            });
+        //if resize here, it will get the wrong size
     }
 
-   
-
- 
-
- 
-
-    private bool isDesktop = false;
-
-    private void SetWorkerWParent()
-    {
-        var hwnd = WindowHelpers.GetWindowHandle(this);
-
-        if (!isDesktop)
-        {
-            WindowHelpers.SetWindowWorkerW(hwnd);
-            isDesktop = true;
-        }
-        else
-        {
-            WindowHelpers.RestoreNormal(hwnd);
-            isDesktop = false;
-        }
-    }
 
     private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs args)
     {
@@ -123,16 +83,14 @@ public sealed partial class MainWindow
         DirectXHelper.SwapChain.Present(1, PresentFlags.None);
     }
 
-    private void ToggleTitle(object sender, RoutedEventArgs e)
-    {
-        //set normal
-        WindowHelpers.RestoreNormal(WindowHelpers.GetWindowHandle(this));
-        ExtendsContentIntoTitleBar = ExtendsContentIntoTitleBar != true;
-        // _presenter.SetBorderAndTitleBar(true, true);
-        // SetClickThrough();
+    private bool isDesktop = false;
 
-        // _presenter.SetBorderAndTitleBar(false, false);
-        // _presenter.IsResizable = false;
+    private void SetTitle(object sender, RoutedEventArgs e)
+    {
+        if (!isDesktop)
+        {
+            ExtendsContentIntoTitleBar = !ExtendsContentIntoTitleBar;
+        }
     }
 
     private void SetClickThrough()
@@ -164,14 +122,23 @@ public sealed partial class MainWindow
 
     private void SetWallPaper(object sender, RoutedEventArgs e)
     {
-        SetWorkerWParent();
+        var hwnd = WindowHelpers.GetWindowHandle(this);
+        WindowHelpers.SetWindowWorkerW(hwnd);
+        isDesktop = true;
     }
 
 
-    private void ToggleTransparent(object sender, RoutedEventArgs e)
+    private void SetTransparent(object sender, RoutedEventArgs e)
     {
-        var hwnd= WindowHelpers.GetWindowHandle(this);
-        WindowHelpers.SetWindowTransparent(hwnd);
-        
+        if (!isDesktop)
+        {
+            var hwnd = WindowHelpers.GetWindowHandle(this);
+            WindowHelpers.SetWindowTransparent(hwnd);
+        }
+    }
+
+    private void RestoreNormal(object sender, RoutedEventArgs e)
+    {
+        WindowHelpers.SetWindowNormal(WindowHelpers.GetWindowHandle(this));
     }
 }
